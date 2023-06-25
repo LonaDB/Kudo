@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>{{this.title}}</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/Dark-NavBar-1.css">
+    <link rel="stylesheet" href="assets/css/Dark-NavBar-2.css">
+    <link rel="stylesheet" href="assets/css/Dark-NavBar.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <script type="text/javascript">
+        function tabE(obj, e) {
+            var e = (typeof event != 'undefined') ? window.event : e;// IE : Moz 
+            if (e.keyCode == 13) {
+                var ele = document.forms[0].elements;
+                for (var i = 0; i < ele.length; i++) {
+                    var q = (i == ele.length - 1) ? 0 : i + 1;// if last element : if any other 
+                    if (obj == ele[i]) { ele[q].focus(); break }
+                }
+                return false;
+            }
+        }
+    </script>
+    <div>
+        <nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
+            style="height:80px;background-color:#37434d;color:#ffffff;">
+            <div class="container-fluid"><a class="navbar-brand" href="#"><i
+                        class="fa fa-globe"></i>&nbsp;ShinoaDB</a><button data-bs-toggle="collapse"
+                    class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle
+                        navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link active" style="color:#ffffff;" href="#"><i
+                                    class="fa fa-github"></i>&nbsp;find it on GitHub</a></li>
+                        <li class="nav-item"></li>
+                        <li class="nav-item"></li>
+                        <li class="nav-item"></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container"
+        style="padding: 25px;text-align: center;border-radius: 53px;box-shadow: 0px 0px 7px;border: 2px solid var(--bs-body-bg);margin: 25px;">
+        <p>Login</p>
+        <form action="/login" method="POST">
+            <input class="form-control" type="text" name="name" value="" data-index="1" placeholder="Username"
+                style="border-radius: 80px;border-width: 2px;border-style: solid;">
+            <input class="form-control" type="text" name="password" value="" data-index="1" placeholder="Password"
+                style="border-radius: 80px;border-width: 2px;border-style: solid;">
+            <input type="submit" value="Login" class="btn btn-primary" data-index="2"
+                style="margin-top: 20px;margin-bottom: 0px;">
+
+        </form>
+    </div>
+
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

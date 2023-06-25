@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
+var path = require("path");
 const { allowedNodeEnvironmentFlags } = require('process');
 
 var lonadb = require("lonadb-client");
@@ -21,11 +22,14 @@ module.exports = class {
             extended: true
         }));
         this.app.use(bodyParser.json());
+
+        this.registerPaths();
+        this.registerCommands();
     }
 
     registerPaths = async function(){
 
-        this.app.get('/', async function (req, res) {
+        this.app.get('/', async (req, res) => {
             if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
 
             let passCheck = await this.lonadb.checkPassword(req.cookies.name, req.cookies.password);
@@ -36,7 +40,8 @@ module.exports = class {
                 return;
             }
         
-            var json = await this.kudo.requestManager.getTables();
+            var json = await this.lonadb.getTables();
+            
             res.render('index.hbs', {
                 title: "LonaDB | Web Interface",
                 tables: json
@@ -58,8 +63,10 @@ module.exports = class {
         this.app.post("/login", async (req, res) => {
             if (req.body.password && req.body.name) {
                 let  checkPassLogin = await this.lonadb.checkPassword(req.body.name, req.body.password);
+                if(!checkPassLogin) return res.redirect("/login");
 
-                if(!passCheck) return res.redirect("/login");
+                res.cookie("name", req.body.name);
+                res.cookie("password", req.body.password)
                 res.redirect('/');
             } else {
                 res.render('loginError.hbs', {
@@ -72,7 +79,7 @@ module.exports = class {
     }
 
     registerCommands = async function () {
-        this,app.post('/command', async (req, res) => {
+        this.app.post('/command', async (req, res) => {
             var cmd = "";
 
             //CHANGE THIS WHEN YOU HAVE TIME IDIOT
@@ -80,13 +87,13 @@ module.exports = class {
             if (req.body.delete == "Delete") cmd = "delete"
             if (req.body.create == 'Create') cmd = 'create'
             if (req.cookies.password !== config.password) return res.render('login.hbs', {
-                title: "ShinoaDB | Login",
+                title: "LonaDB | Login",
             });
         
             switch (cmd) {
                 case 'set':
                     if (req.body.name == 'password') return res.render('error.hbs', {
-                        title: "ShinoaDB | Web Interface",
+                        title: "LonaDB | Web Interface",
                         dataBase: dbCollection.getJson(),
                         err: "Cant change Password in Web. Change in Config.json"
                     });
@@ -96,7 +103,7 @@ module.exports = class {
                     break;
                 case 'delete':
                     if (req.body.name == 'password') return res.render('error.hbs', {
-                        title: "ShinoaDB | Web Interface",
+                        title: "LonaDB | Web Interface",
                         dataBase: dbCollection.getJson(),
                         err: "Cant change Password in Web. Change in Config.json"
                     });
@@ -122,8 +129,8 @@ module.exports = class {
     }
 
     startSocket = async function () {
-        var server = this.app.listen(this.kudo.config.port, () => {
-            console.log('WebSocket listening on port ' + this.kudo.config.port);
+        var server = this.app.listen(this.kudo.config.ownport, () => {
+            console.log('WebSocket listening on port ' + this.kudo.config.ownport);
         });
     }
 }

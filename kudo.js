@@ -30,14 +30,16 @@ async function checkConfig(){
     if (fs.existsSync("./config.json")) return;
     else {
         let ip = await askQuestion("What is the IP/Host your LonaDB instance is running on? \n");
-        let port = await askQuestion("What port is youd LonaDB instance running on? \n");
+        let port = await askQuestion("What port is your LonaDB instance running on? \n");
         let username = await askQuestion("What is your Administrator user username? (initial user) \n");
         let password = await askQuestion("What is your Administrator user password? (initial user) \n");
+        let ownport = await askQuestion("What port do you want the Web Interface to run on? \n");
         fs.writeFileSync("./config.json", JSON.stringify({
             "ip": ip, 
-            "port": port,
+            "port": parseInt(port),
             "username": username,
-            "password": password
+            "password": password,
+            "ownport": parseInt(ownport)
         }));
     }
 }
