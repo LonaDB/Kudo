@@ -1,0 +1,22 @@
+{
+  "name": "kudo",
+  "version": "1.0.0",
+  "description": "web inteface for lonadb",
+  "main": "kudo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LonaDB/Kudo.git"
+  },
+  "keywords": [
+    "LonaDB"
+  ],
+  "author": "LonaDB Team",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/LonaDB/Kudo/issues"
+  },
+  "homepage": "https://github.com/LonaDB/Kudo#readme"
+}
