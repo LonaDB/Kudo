@@ -33,6 +33,7 @@ module.exports = class {
             if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
 
             let passCheck = await this.lonadb.checkPassword(req.cookies.name, req.cookies.password);
+
             if(!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
@@ -41,10 +42,12 @@ module.exports = class {
             }
         
             var json = await this.lonadb.getTables();
+            var createTable = await this.lonadb.checkPermission(req.cookies.name, "table_create");
             
             res.render('index.hbs', {
                 title: "LonaDB | Web Interface",
-                tables: json
+                tables: json,
+                createTablePerm: createTable
             });
         });
 

@@ -1,3 +1,9 @@
     {{#each tables}}
     <p>{{this}}</p>
     {{/each}}
+
+    {{#if createTablePerm}}
+    <p>You are allowed to create tables</p>
+    {{else}}
+    <p>You are not allowed to create tables</p>
+    {{/if}}
