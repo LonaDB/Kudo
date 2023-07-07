@@ -1,9 +1,53 @@
-    {{#each tables}}
-    <p>{{this}}</p>
-    {{/each}}
+<style>
 
-    {{#if createTablePerm}}
-    <p>You are allowed to create tables</p>
-    {{else}}
-    <p>You are not allowed to create tables</p>
-    {{/if}}
+#wrapper {
+    border: 1px solid blue;
+}
+#tables {
+    display: inline-block;
+    width:120px;
+    height:120px;
+    border: 1px solid red;
+}
+#manage {
+    display: inline-block;
+    width:160px;
+    height:160px;
+    border: 1px solid green;
+}
+
+</style>
+
+<div id="wrapper">
+    <div id="tables">
+        {{#each tables}}
+        <form action="/command", method="POST">
+            <input type="hidden" name="tableName" value="{{this}}">
+            <p>{{this}}</p>
+            <input type="submit" value="View Table" name="command">
+        </form>
+        {{/each}}
+    </div>
+
+    <div id="manage">
+        {{#if createUserPerm}}
+        <p>Create new user</p>
+        <form action="/command" method="POST">
+            <input type="text" name="userCreateName" value="" placeholder="New User's username">
+            <input type="password" name="userCreatePassword" value="" placeholder="New User's password">
+            <input type="submit" value="Create User" name="command">
+        </form>
+        {{else}}
+        <p>You are not allowed to create users</p>
+        {{/if}}
+
+        {{#if createTablePerm}}
+        <form action="/command" method="POST">
+            <input type="text" name="tableCreateName" value="" placeholder="New Table name">
+            <input type="submit" value="Create Table" name="command">
+        </form>
+        {{else}}
+        <p>You are not allowed to create tables</p>
+        {{/if}}
+    </div>
+</div>

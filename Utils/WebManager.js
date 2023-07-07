@@ -43,11 +43,35 @@ module.exports = class {
         
             var json = await this.lonadb.getTables();
             var createTable = await this.lonadb.checkPermission(req.cookies.name, "table_create");
+            var createUser = await this.lonadb.checkPermission(req.cookies.name, "user_create");
             
             res.render('index.hbs', {
                 title: "LonaDB | Web Interface",
                 tables: json,
+                createUserPerm: createUser,
                 createTablePerm: createTable
+            });
+        });
+
+        this.app.get('/table/:name', async (req, res) => {
+            if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
+
+            let passCheck = await this.lonadb.checkPassword(req.cookies.name, req.cookies.password);
+
+            if(!passCheck) {
+                res.clearCookie('password');
+                res.clearCookie('name');
+                res.redirect('/login');
+                return;
+            }
+
+            var table = await this.lonadb.getTableData(req.params.name);
+            if(table.not_exist) return res.redirect("/");
+
+            res.render('tableView.hbs', {
+                title: "LonaDB | " + req.params.name,
+                data: table.data,
+                table: req.params.name
             });
         });
 
@@ -86,48 +110,30 @@ module.exports = class {
             var cmd = "";
 
             //CHANGE THIS WHEN YOU HAVE TIME IDIOT
-            if (req.body.set !== '') cmd = 'set'
-            if (req.body.delete == "Delete") cmd = "delete"
-            if (req.body.create == 'Create') cmd = 'create'
-            if (req.cookies.password !== config.password) return res.render('login.hbs', {
-                title: "LonaDB | Login",
-            });
-        
-            switch (cmd) {
-                case 'set':
-                    if (req.body.name == 'password') return res.render('error.hbs', {
-                        title: "LonaDB | Web Interface",
-                        dataBase: dbCollection.getJson(),
-                        err: "Cant change Password in Web. Change in Config.json"
-                    });
-                    dbCollection.set(req.body.name, req.body.set, config.password);
-                    await delay(100);
-                    dbCollection.save('./data.json');
+            if (!req.body.command) return res.redirect("/"); 
+            let checkPassLogin = await this.lonadb.checkPassword(req.cookies.name, req.cookies.password);
+            if (!checkPassLogin) return res.redirect("/login");
+
+            switch (req.body.command.toLowerCase()){
+                case "create user":
+                    await this.lonadb.createUser(req.body.userCreateName, req.body.userCreatePassword);
+                    res.redirect("/");
                     break;
-                case 'delete':
-                    if (req.body.name == 'password') return res.render('error.hbs', {
-                        title: "LonaDB | Web Interface",
-                        dataBase: dbCollection.getJson(),
-                        err: "Cant change Password in Web. Change in Config.json"
-                    });
-                    dbCollection.delete(req.body.name);
-                    await delay(100);
-                    dbCollection.save('./data.json');
+                case "view table":
+                    await res.redirect("/table/" + req.body.tableName);
                     break;
-                case 'create':
-                    if (dbCollection.get(req.body.name) !== undefined) return res.render('error.hbs', {
-                        title: "ShinoaDB | Web Interface",
-                        dataBase: dbCollection.getJson(),
-                        err: "Key already exists"
-                    });
-                    dbCollection.set(req.body.name, req.body.set);
-                    await delay(100);
-                    dbCollection.save('./data.json');
+                case "set":
+                    await this.lonadb.set(req.body.tableName, req.body.name, req.body.value);
+                    res.redirect("/table/" + req.body.tableName);
+                    break;
+                case "create table":
+                    await this.lonadb.createTable(req.body.tableCreateName);
+                    res.redirect("/table/" + req.body.tableCreateName);
+                    break;
+                default:
+                    res.redirect("/");
                     break;
             }
-        
-            await delay(100);
-            res.redirect('/');
         });
     }
 

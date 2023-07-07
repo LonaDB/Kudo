@@ -1,0 +1,11 @@
+{{#each data}}
+<p>{{@key}} = {{this}}</p>
+{{/each}}
+
+<p>Set value (string)</p>
+<form action="/command", method="POST">
+    <input type="hidden" name="tableName" value="{{table}}">
+    <input type="text" value="" name="name" placeholder="Variable name">
+    <input type="text" value="" name="value" placeholder="Variable value">
+    <input type="submit" value="Set" name="command">
+</form>
