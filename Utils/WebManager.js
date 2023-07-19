@@ -6,6 +6,15 @@ const { allowedNodeEnvironmentFlags } = require('process');
 
 var lonadb = require("lonadb-client");
 
+const encrypt = async (string, key) => {
+    let encrypted = await Crypto.AES.encrypt(string, key).toString();
+    return encrypted;
+}
+const decrypt = async (buffer, key) => {
+    let decrypted = await Crypto.AES.decrypt(buffer, key).toString(Crypto.enc.Utf8);
+    return decrypted;
+}
+
 module.exports = class {
     constructor(kudo){
         this.kudo = kudo;
@@ -32,7 +41,7 @@ module.exports = class {
         this.app.get('/', async (req, res) => {
             if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
 
-            let passCheck = await this.lonadb.checkPassword(req.cookies.name, req.cookies.password);
+            let passCheck = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
 
             if(!passCheck) {
                 res.clearCookie('password');
@@ -56,7 +65,7 @@ module.exports = class {
         this.app.get('/table/:name', async (req, res) => {
             if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
 
-            let passCheck = await this.lonadb.checkPassword(req.cookies.name, req.cookies.password);
+            let passCheck = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
 
             if(!passCheck) {
                 res.clearCookie('password');
@@ -93,7 +102,7 @@ module.exports = class {
                 if(!checkPassLogin) return res.redirect("/login");
 
                 res.cookie("name", req.body.name);
-                res.cookie("password", req.body.password)
+                res.cookie("password", await encrypt(req.body.password, this.kudo.config.username))
                 res.redirect('/');
             } else {
                 res.render('loginError.hbs', {
@@ -111,7 +120,7 @@ module.exports = class {
 
             //CHANGE THIS WHEN YOU HAVE TIME IDIOT
             if (!req.body.command) return res.redirect("/"); 
-            let checkPassLogin = await this.lonadb.checkPassword(req.cookies.name, req.cookies.password);
+            let checkPassLogin = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
             if (!checkPassLogin) return res.redirect("/login");
 
             switch (req.body.command.toLowerCase()){

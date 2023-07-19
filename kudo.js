@@ -31,8 +31,8 @@ async function checkConfig(){
     else {
         let ip = await askQuestion("What is the IP/Host your LonaDB instance is running on? \n");
         let port = await askQuestion("What port is your LonaDB instance running on? \n");
-        let username = await askQuestion("What is your Administrator user username? (initial user) \n");
-        let password = await askQuestion("What is your Administrator user password? (initial user) \n");
+        let username = await askQuestion("What is your poweruser's username? \n");
+        let password = await askQuestion("What is your poweruser's password? \n");
         let ownport = await askQuestion("What port do you want the Web Interface to run on? \n");
         fs.writeFileSync("./config.json", JSON.stringify({
             "ip": ip, 
