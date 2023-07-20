@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 var path = require("path");
 const { allowedNodeEnvironmentFlags } = require('process');
 
+var Crypto = require("crypto-js");
 var lonadb = require("lonadb-client");
 
 const encrypt = async (string, key) => {
