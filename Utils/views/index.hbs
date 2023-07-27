@@ -40,7 +40,7 @@
     <div class="container ">
         <div class="row row-cols-2">
             <div class="col ">
-                <div class="table-margin">
+                <div class="table-margin shadowl">
                     <h3>Tables</h3>
                     <br>
                     {{#if createTablePerm}}
@@ -49,8 +49,9 @@
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Name" name="tableCreateName"
                                 aria-describedby="basic-addon2">
-                            <span class="input-group-text" id="basic-addon2"><input type="submit"
-                                    class="btn btn-success" value="Create Table" name="command"></span>
+                            <span class="input-group-text" id="basic-addon2">
+                                    <button type="submit" class="btn btn-success" name="command" value="Create Table">Erstellen</button>
+                                    </span>
                         </div>
                     </form>
                     <br>
@@ -60,14 +61,16 @@
                     {{#each tables}}
                     <form action="/command" , method="POST">
                         <input type="hidden" name="tableName" value="{{this}}">
-                        <div>→ {{this}} <span><input type="submit" class="btn btn-success" value="View Table"
-                                    name="command"></span></div>
+                        <div>
+                            <button type="submit" class="btn btn-success max-btn" name="command" value="View Table"><i class="fa-solid fa-eye"></i> <span style="margin-left: 5px;">{{this}}</span></button>
+                            <button type="submit" class="btn btn-danger" name="command" value="Delete Table"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </form>
                     {{/each}}
                 </div>
             </div>
             <div class="col">
-                <div class="table-margin">
+                <div class="table-margin shadowl">
                     <h3>User Managment</h3>
                     <br>
                     <p>Create new user</p>
