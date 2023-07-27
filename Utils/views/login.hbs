@@ -5,13 +5,99 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>{{this.title}}</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/Dark-NavBar-1.css">
-    <link rel="stylesheet" href="assets/css/Dark-NavBar-2.css">
-    <link rel="stylesheet" href="assets/css/Dark-NavBar.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css" integrity="sha512-Z/def5z5u2aR89OuzYcxmDJ0Bnd5V1cKqBEbvLOiUNWdg9PQeXVvXLI90SE4QOHGlfLqUnDNVAYyZi8UwUTmWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
+
+<style>
+    html, body{
+        font-family: sans-serif;
+        margin: 5px;
+    }
+
+    .navbar{
+        width: 100vw - 40px;
+        height: 50px;
+        padding: 10px;
+        padding-left: 20px;
+        background-color: #009e61;
+        color: #fff;
+        border-radius: 20px;
+    }
+
+    .navbar-burger{
+        font-size: 24px;
+        width: 30px;
+        float: left;
+    }
+
+    .navbar-logo{
+        font-family: sans-serif;
+        font-size: 25px;
+    }
+
+    .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #026d44;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.5s;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px !important;
+    }
+
+    .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-family: sans-serif;
+    font-size: 25px;
+    color: #d2ffee;
+    display: block;
+    transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+    color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    }
+
+    #main {
+    transition: margin-left .5s;
+    padding: 20px;
+    }
+
+    @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+    }
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-form{
+
+    width: 300px;
+}
+
+</style>
 
 <body>
     <script type="text/javascript">
@@ -26,41 +112,51 @@
                 return false;
             }
         }
+
+            function openNav() {
+            document.getElementById("sideNav").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+            }
+
+            function closeNav() {
+            document.getElementById("sideNav").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+            }
     </script>
-    <div>
-        <nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
-            style="height:80px;background-color:#37434d;color:#ffffff;">
-            <div class="container-fluid"><a class="navbar-brand" href="#"><i
-                        class="fa fa-globe"></i>&nbsp;ShinoaDB</a><button data-bs-toggle="collapse"
-                    class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle
-                        navigation</span><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navcol-1">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link active" style="color:#ffffff;" href="#"><i
-                                    class="fa fa-github"></i>&nbsp;find it on GitHub</a></li>
-                        <li class="nav-item"></li>
-                        <li class="nav-item"></li>
-                        <li class="nav-item"></li>
-                    </ul>
+
+        <div class="navbar">
+            <i onclick="openNav()" class="navbar-burger fa-solid fa-bars"></i>
+            <center>
+                <div class="navbar-logo">LonaDB</div>
+            </center>
+            
+        </div>
+    <div id="sideNav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#">Find us on Github</a>
+        <a href="#">Something else</a>
+    </div>
+    <div class="container">
+        <div class="login-container">
+            <h2>Login</h2>
+            <form class="login-form" action="/login" method="POST">
+                
+                <div class="mb-3">
+                <label for="name" class="form-label">Username</label>
+                <input type="text" id="name" class="form-control" name="name">
                 </div>
-            </div>
-        </nav>
+                <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-control" name="password">
+                </div>
+                <center>
+                    <div class="d-grid gap-2">
+                        <input type="submit" value="Login" class="btn btn-success">
+                    </div>
+                </center>
+            </form>
+        </div>
     </div>
-    <div class="container"
-        style="padding: 25px;text-align: center;border-radius: 53px;box-shadow: 0px 0px 7px;border: 2px solid var(--bs-body-bg);margin: 25px;">
-        <p>Login</p>
-        <form action="/login" method="POST">
-            <input class="form-control" type="text" name="name" value="" data-index="1" placeholder="Username"
-                style="border-radius: 80px;border-width: 2px;border-style: solid;">
-            <input class="form-control" type="text" name="password" value="" data-index="1" placeholder="Password"
-                style="border-radius: 80px;border-width: 2px;border-style: solid;">
-            <input type="submit" value="Login" class="btn btn-primary" data-index="2"
-                style="margin-top: 20px;margin-bottom: 0px;">
-
-        </form>
-    </div>
-
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
 
 </html>
