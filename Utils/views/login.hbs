@@ -5,99 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>{{this.title}}</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css" integrity="sha512-Z/def5z5u2aR89OuzYcxmDJ0Bnd5V1cKqBEbvLOiUNWdg9PQeXVvXLI90SE4QOHGlfLqUnDNVAYyZi8UwUTmWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
-
-<style>
-    html, body{
-        font-family: sans-serif;
-        margin: 5px;
-    }
-
-    .navbar{
-        width: 100vw - 40px;
-        height: 50px;
-        padding: 10px;
-        padding-left: 20px;
-        background-color: #009e61;
-        color: #fff;
-        border-radius: 20px;
-    }
-
-    .navbar-burger{
-        font-size: 24px;
-        width: 30px;
-        float: left;
-    }
-
-    .navbar-logo{
-        font-family: sans-serif;
-        font-size: 25px;
-    }
-
-    .sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #026d44;
-    overflow-x: hidden;
-    padding-top: 60px;
-    transition: 0.5s;
-    border-top-right-radius: 50px;
-    border-bottom-right-radius: 50px !important;
-    }
-
-    .sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-family: sans-serif;
-    font-size: 25px;
-    color: #d2ffee;
-    display: block;
-    transition: 0.3s;
-    }
-
-    .sidenav a:hover {
-    color: #f1f1f1;
-    }
-
-    .sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-    }
-
-    #main {
-    transition: margin-left .5s;
-    padding: 20px;
-    }
-
-    @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
-    }
-
-.container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.login-form{
-
-    width: 300px;
-}
-
-</style>
 
 <body>
     <script type="text/javascript">
@@ -126,18 +40,16 @@
 
         <div class="navbar">
             <i onclick="openNav()" class="navbar-burger fa-solid fa-bars"></i>
-            <center>
-                <div class="navbar-logo">LonaDB</div>
-            </center>
+                <b class="navbar-logo">LonaDB | Client</b>
             
         </div>
-    <div id="sideNav" class="sidenav">
+    <div id="sideNav" class="sidenav shadow1">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="#">Find us on Github</a>
         <a href="#">Something else</a>
     </div>
     <div class="container">
-        <div class="login-container">
+        <div class="shadowl rounded">
             <h2>Login</h2>
             <form class="login-form" action="/login" method="POST">
                 

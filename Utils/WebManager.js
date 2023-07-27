@@ -26,7 +26,7 @@ module.exports = class {
         this.app.engine('html', require('hbs').__express);
 
         this.app.set('views', path.join(__dirname, 'views'));
-        this.app.use(express.static(path.join(__dirname, 'public')));
+        this.app.use('/assets', express.static(path.join(__dirname, 'assets')));
         this.app.use(cookieParser());
         this.app.use(bodyParser.urlencoded({
             extended: true
@@ -38,7 +38,6 @@ module.exports = class {
     }
 
     registerPaths = async function(){
-
         this.app.get('/', async (req, res) => {
             if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
 
@@ -58,6 +57,7 @@ module.exports = class {
             res.render('index.hbs', {
                 title: "LonaDB | Web Interface",
                 tables: json,
+                username: req.cookies.name,
                 createUserPerm: createUser,
                 createTablePerm: createTable
             });

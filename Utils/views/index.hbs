@@ -1,53 +1,95 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>{{this.title}} - Home</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"
+        integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css"
+        integrity="sha512-Z/def5z5u2aR89OuzYcxmDJ0Bnd5V1cKqBEbvLOiUNWdg9PQeXVvXLI90SE4QOHGlfLqUnDNVAYyZi8UwUTmWQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
 <style>
 
-#wrapper {
-    border: 1px solid blue;
-}
-#tables {
-    display: inline-block;
-    width:120px;
-    height:120px;
-    border: 1px solid red;
-}
-#manage {
-    display: inline-block;
-    width:160px;
-    height:160px;
-    border: 1px solid green;
-}
 
 </style>
+<nav class="navbar">
+    <div class="navbar-logo">LonaDB</div>
+    <div class="dropdown">
+        <a class="btn btn-success dropdown-toggle" style="border-radius: 50px; border-width: 0px;" href="#"
+            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{username}}
+        </a>
+
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item text-danger" href="/logout">Log Out</a></li>
+        </ul>
+    </div>
+</nav>
 
 <div id="wrapper">
-    <div id="tables">
-        {{#each tables}}
-        <form action="/command", method="POST">
-            <input type="hidden" name="tableName" value="{{this}}">
-            <p>{{this}}</p>
-            <input type="submit" value="View Table" name="command">
-        </form>
-        {{/each}}
+
+    <div class="container ">
+        <div class="row row-cols-2">
+            <div class="col ">
+                <div class="table-margin">
+                    <h3>Tables</h3>
+                    <br>
+                    {{#if createTablePerm}}
+                    <p>Create Table</p>
+                    <form action="/command" method="POST">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Name" name="tableCreateName"
+                                aria-describedby="basic-addon2">
+                            <span class="input-group-text" id="basic-addon2"><input type="submit"
+                                    class="btn btn-success" value="Create Table" name="command"></span>
+                        </div>
+                    </form>
+                    <br>
+                    {{else}}
+                    <p class="text-danger">You are not allowed to create tables</p>
+                    {{/if}}
+                    {{#each tables}}
+                    <form action="/command" , method="POST">
+                        <input type="hidden" name="tableName" value="{{this}}">
+                        <div>→ {{this}} <span><input type="submit" class="btn btn-success" value="View Table"
+                                    name="command"></span></div>
+                    </form>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="col">
+                <div class="table-margin">
+                    <h3>User Managment</h3>
+                    <br>
+                    <p>Create new user</p>
+                    {{#if createUserPerm}}
+
+                    <form action="/command" method="POST">
+                        <input type="text" name="userCreateName" class="form-control" value=""
+                            placeholder="New User's username">
+                        <br>
+                        <input type="password" name="userCreatePassword" class="form-control" value=""
+                            placeholder="New User's password">
+                        <br>
+                        <div class="d-grid gap-2">
+                            <input type="submit" class="btn btn-success" value="Create User" name="command">
+                        </div>
+                    </form>
+                    {{else}}
+                    <p class="text-danger">You are not allowed to create users</p>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="manage">
-        {{#if createUserPerm}}
-        <p>Create new user</p>
-        <form action="/command" method="POST">
-            <input type="text" name="userCreateName" value="" placeholder="New User's username">
-            <input type="password" name="userCreatePassword" value="" placeholder="New User's password">
-            <input type="submit" value="Create User" name="command">
-        </form>
-        {{else}}
-        <p>You are not allowed to create users</p>
-        {{/if}}
-
-        {{#if createTablePerm}}
-        <form action="/command" method="POST">
-            <input type="text" name="tableCreateName" value="" placeholder="New Table name">
-            <input type="submit" value="Create Table" name="command">
-        </form>
-        {{else}}
-        <p>You are not allowed to create tables</p>
-        {{/if}}
-    </div>
 </div>
