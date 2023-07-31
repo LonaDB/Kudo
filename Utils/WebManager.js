@@ -63,6 +63,33 @@ module.exports = class {
             });
         });
 
+        this.app.get('/users', async (req, res) => {
+            if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
+
+            let passCheck = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
+
+            if(!passCheck) {
+                res.clearCookie('password');
+                res.clearCookie('name');
+                res.redirect('/login');
+                return;
+            }
+            
+            var createUser = await this.lonadb.checkPermission(req.cookies.name, "user_create");
+            var deleteUser = await this.lonadb.checkPermission(req.cookies.name, "user_delete");
+            var usersList = await this.lonadb.getUsers();
+
+            if(!createUser && !deleteUser) return res.redirect("/");
+
+            res.render('users.hbs', {
+                title: "Lonadb | Users",
+                username: req.cookies.name,
+                createUserPerm: createUser,
+                deleteUserPerm: deleteUser,
+                users: usersList
+            })
+        })
+
         this.app.get('/table/:name', async (req, res) => {
             if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
 
@@ -81,7 +108,8 @@ module.exports = class {
             res.render('tableView.hbs', {
                 title: "LonaDB | " + req.params.name,
                 data: table.data,
-                table: req.params.name
+                table: req.params.name,
+                username: req.cookies.name,
             });
         });
 
@@ -127,18 +155,30 @@ module.exports = class {
             switch (req.body.command.toLowerCase()){
                 case "create user":
                     await this.lonadb.createUser(req.body.userCreateName, req.body.userCreatePassword);
-                    res.redirect("/");
+                    res.redirect("/users");
                     break;
-                case "view table":
-                    await res.redirect("/table/" + req.body.tableName);
-                    break;
-                case "set":
-                    await this.lonadb.set(req.body.tableName, req.body.name, req.body.value);
-                    res.redirect("/table/" + req.body.tableName);
+                case "delete user":
+                    await this.lonadb.deleteUser(req.body.userName);
+                    res.redirect("/users");
                     break;
                 case "create table":
                     await this.lonadb.createTable(req.body.tableCreateName);
                     res.redirect("/table/" + req.body.tableCreateName);
+                    break;
+                case "view table":
+                    await res.redirect("/table/" + req.body.tableName);
+                    break;
+                case "delete table":
+                    await this.lonadb.deleteTable(req.body.tableName);
+                    res.redirect("/");
+                    break;
+                case "set variable":
+                    await this.lonadb.set(req.body.tableName, req.body.name, req.body.value);
+                    res.redirect("/table/" + req.body.tableName);
+                    break;
+                case "delete variable":
+                    await this.lonadb.delete(req.body.tableName, req.body.name, req.body.value);
+                    res.redirect("/table/" + req.body.tableName);
                     break;
                 default:
                     res.redirect("/");

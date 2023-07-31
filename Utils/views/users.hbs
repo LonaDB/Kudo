@@ -1,7 +1,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>{{this.title}} - Home</title>
+    <title>{{this.title}} - Users</title>
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
@@ -38,39 +38,39 @@
 
 <div id="wrapper">
 
-    <div class="container">
-        <div class="row">
-            <div class="col ">
+    <div class="container ">
+        <div class="col">
                 <div class="table-margin shadowl">
-                    <h3>Tables</h3>
+                    <h3>User Managment</h3>
                     <br>
-                    {{#if createTablePerm}}
-                    <p>Create Table</p>
+                    <p>Create new user</p>
+                    {{#if createUserPerm}}
+
                     <form action="/command" method="POST">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Name" name="tableCreateName"
-                                aria-describedby="basic-addon2">
-                            <span class="input-group-text" id="basic-addon2">
-                                    <button type="submit" class="btn btn-success" name="command" value="Create Table">Erstellen</button>
-                                    </span>
+                        <input type="text" name="userCreateName" class="form-control" value=""
+                            placeholder="New User's username">
+                        <br>
+                        <input type="password" name="userCreatePassword" class="form-control" value=""
+                            placeholder="New User's password">
+                        <br>
+                        <div class="d-grid gap-2">
+                            <input type="submit" class="btn btn-success" value="Create User" name="command">
                         </div>
                     </form>
-                    <br>
                     {{else}}
-                    <p class="text-danger">You are not allowed to create tables</p>
+                    <p class="text-danger">You are not allowed to create users</p>
                     {{/if}}
-                    {{#each tables}}
+
+                    {{#each users}}
                     <form action="/command" , method="POST">
-                        <input type="hidden" name="tableName" value="{{this}}">
+                        <input type="hidden" name="userName" value="{{this}}">
                         <div>
-                            <button type="submit" class="btn btn-success max-btn" name="command" value="View Table"><i class="fa-solid fa-eye"></i> <span style="margin-left: 5px;">{{this}}</span></button>
-                            <button type="submit" class="btn btn-danger" name="command" value="Delete Table"><i class="fa-solid fa-trash"></i></button>
+                            <button type="button" class="btn btn-success max-btn" ><span style="margin-left: 5px;">{{this}}</span></button>
+                            <button type="submit" class="btn btn-danger" name="command" value="Delete User"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </form>
                     {{/each}}
                 </div>
             </div>
-        </div>
     </div>
-
 </div>
