@@ -2,7 +2,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var path = require("path");
-const { allowedNodeEnvironmentFlags } = require('process');
 
 var Crypto = require("crypto-js");
 var lonadb = require("lonadb-client");
@@ -17,7 +16,7 @@ const decrypt = async (buffer, key) => {
 }
 
 module.exports = class {
-    constructor(kudo){
+    constructor(kudo) {
         this.kudo = kudo;
         this.lonadb = new lonadb(this.kudo.config.host, this.kudo.config.port, this.kudo.config.username, this.kudo.config.password);
         this.app = express();
@@ -37,25 +36,25 @@ module.exports = class {
         this.registerCommands();
     }
 
-    registerPaths = async function(){
+    registerPaths = async function () {
         this.app.get('/', async (req, res) => {
             if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
 
             let passCheck = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
 
-            if(!passCheck) {
+            if (!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
                 res.redirect('/login');
                 return;
             }
-        
+
             var json = await this.lonadb.getTables();
             var createTable = await this.lonadb.checkPermission(req.cookies.name, "table_create");
             var createUser = await this.lonadb.checkPermission(req.cookies.name, "user_create");
-            
+
             res.render('index.hbs', {
-                title: "LonaDB | Web Interface",
+                title: "LonaDB | Main",
                 tables: json,
                 username: req.cookies.name,
                 createUserPerm: createUser,
@@ -68,18 +67,18 @@ module.exports = class {
 
             let passCheck = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
 
-            if(!passCheck) {
+            if (!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
                 res.redirect('/login');
                 return;
             }
-            
+
             var createUser = await this.lonadb.checkPermission(req.cookies.name, "user_create");
             var deleteUser = await this.lonadb.checkPermission(req.cookies.name, "user_delete");
             var usersList = await this.lonadb.getUsers();
 
-            if(!createUser && !deleteUser) return res.redirect("/");
+            if (!createUser && !deleteUser) return res.redirect("/");
 
             res.render('users.hbs', {
                 title: "Lonadb | Users",
@@ -88,6 +87,29 @@ module.exports = class {
                 deleteUserPerm: deleteUser,
                 users: usersList
             })
+        });
+
+        this.app.get('/user/:name', async (req, res) => {
+            if (!req.cookies.password || !req.cookies.name) return res.redirect('/login');
+
+            let passCheck = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
+
+            if (!passCheck) {
+                res.clearCookie('password');
+                res.clearCookie('name');
+                res.redirect('/login');
+                return;
+            }
+
+            var permissions = await this.lonadb.getPermissionsRaw(req.params.name);
+            if (permissions.not_exist) return res.redirect("/");
+
+            res.render('tableView.hbs', {
+                title: "LonaDB | " + req.params.name,
+                permissions: permissions.list,
+                user: req.params.name,
+                username: req.cookies.name,
+            });
         })
 
         this.app.get('/table/:name', async (req, res) => {
@@ -95,7 +117,7 @@ module.exports = class {
 
             let passCheck = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
 
-            if(!passCheck) {
+            if (!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
                 res.redirect('/login');
@@ -103,7 +125,7 @@ module.exports = class {
             }
 
             var table = await this.lonadb.getTableData(req.params.name);
-            if(table.not_exist) return res.redirect("/");
+            if (table.not_exist) return res.redirect("/");
 
             res.render('tableView.hbs', {
                 title: "LonaDB | " + req.params.name,
@@ -127,8 +149,8 @@ module.exports = class {
 
         this.app.post("/login", async (req, res) => {
             if (req.body.password && req.body.name) {
-                let  checkPassLogin = await this.lonadb.checkPassword(req.body.name, req.body.password);
-                if(!checkPassLogin) return res.redirect("/login");
+                let checkPassLogin = await this.lonadb.checkPassword(req.body.name, req.body.password);
+                if (!checkPassLogin) return res.redirect("/login");
 
                 res.cookie("name", req.body.name);
                 res.cookie("password", await encrypt(req.body.password, this.kudo.config.username))
@@ -148,11 +170,11 @@ module.exports = class {
             var cmd = "";
 
             //CHANGE THIS WHEN YOU HAVE TIME IDIOT
-            if (!req.body.command) return res.redirect("/"); 
+            if (!req.body.command) return res.redirect("/");
             let checkPassLogin = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
             if (!checkPassLogin) return res.redirect("/login");
 
-            switch (req.body.command.toLowerCase()){
+            switch (req.body.command.toLowerCase()) {
                 case "create user":
                     await this.lonadb.createUser(req.body.userCreateName, req.body.userCreatePassword);
                     res.redirect("/users");
@@ -179,6 +201,14 @@ module.exports = class {
                 case "delete variable":
                     await this.lonadb.delete(req.body.tableName, req.body.name, req.body.value);
                     res.redirect("/table/" + req.body.tableName);
+                    break;
+                case "add permission":
+                    await this.lonadb.addPermission(req.body.user, req.body.permissionName);
+                    res.redirect("/user/" + req.body.user);
+                    break;
+                case "remove permission":
+                    await this.lonadb.removePermission(req.body.user, req.body.permissionName);
+                    res.redirect("/user/" + req.body.user);
                     break;
                 default:
                     res.redirect("/");
