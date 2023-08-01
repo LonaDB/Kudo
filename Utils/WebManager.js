@@ -104,7 +104,7 @@ module.exports = class {
             var permissions = await this.lonadb.getPermissionsRaw(req.params.name);
             if (permissions.not_exist) return res.redirect("/");
 
-            res.render('tableView.hbs', {
+            res.render('userManage.hbs', {
                 title: "LonaDB | " + req.params.name,
                 permissions: permissions.list,
                 user: req.params.name,

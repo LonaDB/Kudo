@@ -1,0 +1,11 @@
+<a href="/">Home</a>
+{{#each permissions}}
+<p>{{@key}} = {{this}}</p>
+{{/each}}
+
+<p>Set value (string)</p>
+<form action="/command", method="POST">
+    <input type="hidden" name="user" value="{{user}}">
+    <input type="text" value="" name="permissionName" placeholder="Permission Name">
+    <input type="submit" value="Add Permission" name="command">
+</form>
