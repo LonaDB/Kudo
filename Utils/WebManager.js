@@ -169,45 +169,48 @@ module.exports = class {
         this.app.post('/command', async (req, res) => {
             var cmd = "";
 
-            //CHANGE THIS WHEN YOU HAVE TIME IDIOT
+            var tempClient = new lonadb(this.kudo.config.host, this.kudo.config.port, req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
+            
             if (!req.body.command) return res.redirect("/");
-            let checkPassLogin = await this.lonadb.checkPassword(req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
+            
+            let password = await decrypt(req.cookies.password, this.kudo.config.username);
+            let checkPassLogin = await tempClient.checkPassword(req.cookies.name, password);
             if (!checkPassLogin) return res.redirect("/login");
 
             switch (req.body.command.toLowerCase()) {
                 case "create user":
-                    await this.lonadb.createUser(req.body.userCreateName, req.body.userCreatePassword);
+                    await tempClient.createUser(req.body.userCreateName, req.body.userCreatePassword);
                     res.redirect("/users");
                     break;
                 case "delete user":
-                    await this.lonadb.deleteUser(req.body.userName);
+                    await tempClient.deleteUser(req.body.userName);
                     res.redirect("/users");
                     break;
                 case "create table":
-                    await this.lonadb.createTable(req.body.tableCreateName);
+                    await tempClient.createTable(req.body.tableCreateName);
                     res.redirect("/table/" + req.body.tableCreateName);
                     break;
                 case "view table":
                     await res.redirect("/table/" + req.body.tableName);
                     break;
                 case "delete table":
-                    await this.lonadb.deleteTable(req.body.tableName);
+                    await tempClient.deleteTable(req.body.tableName);
                     res.redirect("/");
                     break;
                 case "set variable":
-                    await this.lonadb.set(req.body.tableName, req.body.name, req.body.value);
+                    await tempClient.set(req.body.tableName, req.body.name, req.body.value);
                     res.redirect("/table/" + req.body.tableName);
                     break;
                 case "delete variable":
-                    await this.lonadb.delete(req.body.tableName, req.body.name, req.body.value);
+                    await tempClient.delete(req.body.tableName, req.body.name, req.body.value);
                     res.redirect("/table/" + req.body.tableName);
                     break;
                 case "add permission":
-                    await this.lonadb.addPermission(req.body.user, req.body.permissionName);
+                    await tempClient.addPermission(req.body.user, req.body.permissionName);
                     res.redirect("/user/" + req.body.user);
                     break;
                 case "remove permission":
-                    await this.lonadb.removePermission(req.body.user, req.body.permissionName);
+                    await tempClient.removePermission(req.body.user, req.body.permissionName);
                     res.redirect("/user/" + req.body.user);
                     break;
                 default:
