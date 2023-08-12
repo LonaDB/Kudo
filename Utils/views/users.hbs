@@ -61,15 +61,26 @@
                     <p class="text-danger">You are not allowed to create users</p>
                     {{/if}}
 
-                    {{#each users}}
-                    <form action="/command" , method="POST">
-                        <input type="hidden" name="userName" value="{{this}}">
-                        <div>
-                            <button type="button" class="btn btn-success max-btn" ><span style="margin-left: 5px;">{{this}}</span></button>
-                            <button type="submit" class="btn btn-danger" name="command" value="Delete User"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </form>
-                    {{/each}}
+                    {{#if deleteUserPerm}}
+                        {{#each users}}
+                        <form action="/command" , method="POST">
+                            <input type="hidden" name="userName" value="{{this}}">
+                            <div>
+                                <button type="button" class="btn btn-success max-btn" ><span style="margin-left: 5px;">{{this}}</span></button>
+                                <button type="submit" class="btn btn-danger" name="command" value="Delete User"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </form>
+                        {{/each}}
+                    {{else}}
+                        {{#each users}}
+                        <form action="/command" , method="POST">
+                            <input type="hidden" name="userName" value="{{this}}">
+                            <div>
+                                <button type="button" class="btn btn-success max-btn" ><span style="margin-left: 5px;">{{this}}</span></button>
+                            </div>
+                        </form>
+                        {{/each}}
+                    {{/if}}
                 </div>
             </div>
     </div>

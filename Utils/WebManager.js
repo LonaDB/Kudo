@@ -45,21 +45,33 @@ module.exports = class {
             if (!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
-                res.redirect('/login');
+                res.redirect('/login?err=login_informations');
                 return;
             }
 
             var json = await this.lonadb.getTables();
             var createTable = await this.lonadb.checkPermission(req.cookies.name, "table_create");
             var createUser = await this.lonadb.checkPermission(req.cookies.name, "user_create");
+            var deleteUser = await this.lonadb.checkPermission(req.cookies.name, "user_delete");
 
-            res.render('index.hbs', {
+            var data = {
                 title: "LonaDB | Main",
                 tables: json,
                 username: req.cookies.name,
                 createUserPerm: createUser,
+                deleteUserPerm: deleteUser,
                 createTablePerm: createTable
-            });
+            }
+
+            if(req.query.err){
+                switch(req.query.err){
+                    case "missing_permission":
+                        data.error = "You are not allowed to do this"
+                        break;
+                }
+            }
+
+            res.render('index.hbs', data);
         });
 
         this.app.get('/users', async (req, res) => {
@@ -70,7 +82,7 @@ module.exports = class {
             if (!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
-                res.redirect('/login');
+                res.redirect('/login?err=login_informations');
                 return;
             }
 
@@ -78,7 +90,7 @@ module.exports = class {
             var deleteUser = await this.lonadb.checkPermission(req.cookies.name, "user_delete");
             var usersList = await this.lonadb.getUsers();
 
-            if (!createUser && !deleteUser) return res.redirect("/");
+            if (!createUser && !deleteUser) return res.redirect("/?err=missing_permission");
 
             res.render('users.hbs', {
                 title: "Lonadb | Users",
@@ -97,7 +109,7 @@ module.exports = class {
             if (!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
-                res.redirect('/login');
+                res.redirect('/login?err=login_informations');
                 return;
             }
 
@@ -120,7 +132,7 @@ module.exports = class {
             if (!passCheck) {
                 res.clearCookie('password');
                 res.clearCookie('name');
-                res.redirect('/login');
+                res.redirect('/login?err=login_informations');
                 return;
             }
 
@@ -142,24 +154,32 @@ module.exports = class {
         });
 
         this.app.get("/login", function (req, res) {
-            res.render('login.hbs', {
+            var data = {
                 title: "LonaDB | Login"
-            });
+            }
+
+            switch(req.query.err){
+                case "missing_login_info":
+                    data.error = "Missing username or password";
+                    break;
+                case "login_informations":
+                    data.error = "Password or username is wrong";
+                    break;
+            }
+
+            res.render('login.hbs', data);
         });
 
         this.app.post("/login", async (req, res) => {
             if (req.body.password && req.body.name) {
                 let checkPassLogin = await this.lonadb.checkPassword(req.body.name, req.body.password);
-                if (!checkPassLogin) return res.redirect("/login");
+                if (!checkPassLogin) return res.redirect("/login?err=login_informations");
 
                 res.cookie("name", req.body.name);
                 res.cookie("password", await encrypt(req.body.password, this.kudo.config.username))
                 res.redirect('/');
             } else {
-                res.render('loginError.hbs', {
-                    title: "LonaDB | Login",
-                    err: 'wrong password'
-                });
+                res.redirect('/login?err=missing_login_info')
             }
         });
 
