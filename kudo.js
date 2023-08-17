@@ -14,26 +14,44 @@ let BSON = require("bson");
 
 process.stdout.write('\033c');
 
-function askQuestion(query) {
-    const rl = readline.createInterface({
+function askQuestion(query, hide) {
+    var rl = readline.createInterface({
         input: process.stdin,
-        output: process.stdout,
-    });
+        output: process.stdout
+      });
+      
+      rl.input.on("keypress", function (c, k) {
+        if(hide){
+            // get the number of characters entered so far:
+            var len = rl.line.length;
+            // move cursor back to the beginning of the input:
+            readline.moveCursor(rl.output, -len, 0);
+            // clear everything to the right of the cursor:
+            readline.clearLine(rl.output, 1);
+            // replace the original input with asterisks:
+            for (var i = 0; i < len; i++) {
+            rl.output.write("*");
+            }
+        }
+      });
+      
 
-    return new Promise(resolve => rl.question(query, ans => {
-        rl.close();
-        resolve(ans);
-    }))
+    return new Promise(resolve => {
+        rl.question(query, function(answer) {
+            rl.close();
+            resolve(answer);
+          });
+    });
 }
 
 async function checkConfig(){
     if (fs.existsSync("./config.json")) return;
     else {
-        let ip = await askQuestion("What is the IP/Host your LonaDB instance is running on? \n");
-        let port = await askQuestion("What port is your LonaDB instance running on? \n");
-        let username = await askQuestion("What is your poweruser's username? \n");
-        let password = await askQuestion("What is your poweruser's password? \n");
-        let ownport = await askQuestion("What port do you want the Web Interface to run on? \n");
+        let ip = await askQuestion("What is the IP/Host your LonaDB instance is running on? \n", false);
+        let port = await askQuestion("What port is your LonaDB instance running on? \n", false);
+        let username = await askQuestion("What is your poweruser's username? \n", false);
+        let password = await askQuestion("What is your poweruser's password? \n", true);
+        let ownport = await askQuestion("What port do you want the Web Interface to run on? \n", false);
         fs.writeFileSync("./config.json", JSON.stringify({
             "ip": ip, 
             "port": parseInt(port),
