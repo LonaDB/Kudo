@@ -49,7 +49,7 @@ module.exports = class {
                 return;
             }
 
-            var json = await this.lonadb.getTables();
+            var json = await this.lonadb.getTables(req.cookies.name);
             var createTable = await this.lonadb.checkPermission(req.cookies.name, "table_create");
             var createUser = await this.lonadb.checkPermission(req.cookies.name, "user_create");
             var deleteUser = await this.lonadb.checkPermission(req.cookies.name, "user_delete");
