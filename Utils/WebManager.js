@@ -6,6 +6,41 @@ var path = require("path");
 var Crypto = require("crypto-js");
 var lonadb = require("lonadb-client");
 
+function checkbool (s){
+    switch(s.toLowerCase()){
+        case "false":
+            return false;
+            break;
+        case "true":
+            return true;
+            break;
+        default:
+            return "not a bool";
+            break;
+    }
+}
+
+function checkjson(s){
+try {
+  JSON.parse(s);
+  return true;
+} catch (error) {
+  return false;
+}
+}
+
+const getVariable = async (val) => {
+    var bool = await checkbool(val);
+    var float = await parseFloat(val);
+    var json = await checkjson(val);
+    console.log(json)
+    
+    if(bool !== "not a bool") return bool;
+    if(!isNaN(float)) return float;
+    if(json) return JSON.parse(val);
+    return val;
+}
+
 const encrypt = async (string, key) => {
     let encrypted = await Crypto.AES.encrypt(string, key).toString();
     return encrypted;
@@ -21,8 +56,15 @@ module.exports = class {
         this.lonadb = new lonadb(this.kudo.config.host, this.kudo.config.port, this.kudo.config.username, this.kudo.config.password);
         this.app = express();
 
+        let hbs = require('hbs');
+
+        hbs.registerHelper('json', function(context) {
+            if(typeof(context) === typeof({})) return JSON.stringify(context);
+            return context;
+        });
+
         this.app.set('view engine', 'html');
-        this.app.engine('html', require('hbs').__express);
+        this.app.engine('html', hbs.__express);
 
         this.app.set('views', path.join(__dirname, 'views'));
         this.app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -218,7 +260,9 @@ module.exports = class {
                     res.redirect("/");
                     break;
                 case "set variable":
-                    await tempClient.set(req.body.tableName, req.body.name, req.body.value);
+                    let variable = await getVariable(req.body.value);
+
+                    await tempClient.set(req.body.tableName, req.body.name, variable);
                     res.redirect("/table/" + req.body.tableName);
                     break;
                 case "delete variable":
