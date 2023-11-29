@@ -2,6 +2,8 @@ html, body{
     font-family: sans-serif;
     margin: 5px;
     overflow-y:hidden ;
+    background-color: #1c1d23;
+    color: #fff !important;
 }
 
 .navbar{
@@ -27,6 +29,11 @@ html, body{
     font-size: 25px;
     color: #fff;
     text-decoration: none;
+}
+
+.dropdown-menu, .dropdown-item{
+    background-color: #30323d;
+    color: #fff;
 }
 
 .sidenav {
@@ -89,7 +96,7 @@ width: 300px;
 }
 .shadowl{
 padding: 30px;
-box-shadow: 0px 0px 30px #9a9a9a;
+box-shadow: 0px 0px 30px #2a2d39;
 }
 
 .table-margin{
@@ -97,7 +104,15 @@ box-shadow: 0px 0px 30px #9a9a9a;
     padding: 50px;
     min-height: 500px;
     border-radius: 20px;
+    background-color: #30323d;
     z-index: 3;
+}
+input[type=text], input[type=password], .input-group-text{
+    background-color: #2a2b34;
+    border-color: #30323d;
+}
+input[type=text]::placeholder, input[type=password]::placeholder{
+    color: #62677c;
 }
 
 .max-btn{
