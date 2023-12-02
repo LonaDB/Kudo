@@ -73,7 +73,7 @@
                         <form action="/command" , method="POST">
                             <input type="hidden" name="userName" value="{{this}}">
                             <div>
-                                <button type="button" class="btn btn-success max-btn" ><span style="margin-left: 5px;">{{this}}</span></button>
+                                <a href="/user/{{this}}" class="btn btn-success max-btn" ><span style="margin-left: 5px;">{{this}}</span></a>
                                 <button type="submit" class="btn btn-danger" name="command" value="Delete User"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </form>

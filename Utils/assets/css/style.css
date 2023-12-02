@@ -36,6 +36,11 @@ html, body{
     color: #fff;
 }
 
+.dropdown-item:hover{
+background-color: #454754;
+color: #fff;
+}
+
 .sidenav {
 height: 100%;
 width: 0;
