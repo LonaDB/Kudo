@@ -111,7 +111,7 @@ box-shadow: 0px 0px 30px #2a2d39;
     border-radius: 20px;
     background-color: #30323d;
     z-index: 3;
-    max-width: 600px;
+    max-width: 800px;
 }
 
 .table-item-br{
@@ -135,7 +135,7 @@ input[type=text], input[type=password], .input-group-text, textarea{
 input[type=text]{
     max-height: 55px;
 }
-textarea {
+.textarea-table {
     max-height: 300px;
     min-height: 50px !important;
 }

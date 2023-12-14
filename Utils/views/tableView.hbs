@@ -3,6 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>{{this.title}}</title>
 
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -16,12 +17,10 @@
         integrity="sha512-Z/def5z5u2aR89OuzYcxmDJ0Bnd5V1cKqBEbvLOiUNWdg9PQeXVvXLI90SE4QOHGlfLqUnDNVAYyZi8UwUTmWQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/tln.min.css">
+    <script src="/assets/javascript/tln.min.js"></script>
 </head>
 
-<style>
-
-
-</style>
 <nav class="navbar">
     <div class=""><a class="navbar-logo" href="/">LonaDB</a></div>
     <div class="dropdown">
@@ -55,10 +54,11 @@
                     <p>Variable list</p>
                     <form action="/command" method="POST">
                         <input type="hidden" name="tableName" value="{{table}}">
+
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Name" name="name"
                                 aria-describedby="basic-addon2" style="margin-right: 15px;">
-                            <textarea name="value" placeholder="Value" class="form-control" cols="30" rows="1"></textarea>
+                            <textarea class="textarea-table" name="value" placeholder="Value" class="form-control" cols="30" rows="1"></textarea>
                             <span class="input-group-text" id="basic-addon2">
                                     <button type="submit" class="btn btn-success" name="command" style="margin-right:10px;" value="Set Variable">Save</button>
                                 <button type="submit" class="btn btn-danger" name="command" value="Delete Variable">Remove</button>
@@ -70,16 +70,18 @@
                     <table class="table table-dark table-striped">
                         <thead>
                             <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Value</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                     {{#each data}}
                     
                             <tr >
-                            <td><pre><code>{{@key}}</code></pre></td>
-                            <td class="table-item-br">{{{json this}}}</td>
+                                <td><pre><code>{{@key}}</code></pre></td>
+                                <td class="table-item-br">{{{json this}}}</td>
+                                <td><button class="btn btn-warning" data-bs-target="#{{@key}}-modal" onclick=" prettyPrint('inputcontent-{{@key}}'); TLN.append_line_numbers('inputcontent-{{@key}}');" data-bs-toggle="modal"><i class="fa-solid fa-pen-to-square"></i></button></td>
                             </tr>
                     {{/each}}
                     </tbody>
@@ -91,3 +93,41 @@
     </div>
 
 </div>
+{{#each data}}
+
+    <div class="modal fade" id="{{@key}}-modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" >Edit {{@key}}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/command" method="POST">
+                <div class="modal-body">
+
+                    <input type="hidden" name="tableName" value="{{../table}}">
+                    <input type="hidden" name="name" value="{{@key}}">
+                    <textarea spellcheck="false" name="value" id="inputcontent-{{@key}}" style="width: calc(100vw - 40px); height: calc(100vh - 180px); overflow: hidden;" cols="50" rows="25">{{json this}}</textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" onclick="prettyPrint('inputcontent-{{@key}}')" >Format JSON {/}</button>
+                    <button class="btn btn-danger" onclick="location.reload()" type="button" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" name="command" style="margin-right:10px;" value="Set Variable">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<script>
+    function prettyPrint(textareaID) {
+        const ugly = document.getElementById(textareaID).value;
+        try {
+            var obj = JSON.parse(ugly);
+            var pretty = JSON.stringify(obj, undefined, 4);
+            document.getElementById(textareaID).value = pretty;
+        } catch (e) {
+            return;
+        }
+    }
+</script>
+{{/each}}

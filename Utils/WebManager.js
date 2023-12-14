@@ -230,7 +230,6 @@ module.exports = class {
     registerCommands = async function () {
         this.app.post('/command', async (req, res) => {
             var cmd = "";
-
             var tempClient = new lonadb(this.kudo.config.host, this.kudo.config.port, req.cookies.name, await decrypt(req.cookies.password, this.kudo.config.username));
             
             if (!req.body.command) return res.redirect("/");
